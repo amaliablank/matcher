@@ -1,0 +1,15 @@
+{
+  "name": "vc-matcher",
+  "displayName": "VC Matcher",
+  "version": "1.0.0",
+  "description": "High-conviction matching between startups and VCs. Eight cooperating agents (coordinator, profilers, scouts, match-scorer, devils-advocate, deduplicator) research with web search only, audit every fact adversarially, and report only matches that clear a shared rubric.",
+  "author": {
+    "name": "Backed VC",
+    "email": "amalia@backed.vc",
+    "url": "https://backed.vc"
+  },
+  "homepage": "https://github.com/amaliablank/matcher",
+  "repository": "https://github.com/amaliablank/matcher",
+  "license": "MIT",
+  "keywords": ["venture-capital", "fundraising", "dealflow", "investor-matching", "due-diligence", "multi-agent"]
+}

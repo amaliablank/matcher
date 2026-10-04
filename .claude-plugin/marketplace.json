@@ -1,0 +1,19 @@
+{
+  "name": "backed-plugins",
+  "owner": {
+    "name": "Backed VC",
+    "email": "amalia@backed.vc",
+    "url": "https://backed.vc"
+  },
+  "description": "Claude Code plugins from Backed VC.",
+  "plugins": [
+    {
+      "name": "vc-matcher",
+      "source": "./plugins/vc-matcher",
+      "description": "High-conviction startup ↔ VC matching: /match-vcs <startup> and /match-startups <vc>. Eight agents, web search only, adversarial fact audit, shared rubric.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "tags": ["venture-capital", "fundraising", "research", "multi-agent"]
+    }
+  ]
+}
