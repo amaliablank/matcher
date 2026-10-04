@@ -1,8 +1,8 @@
 {
   "name": "vc-matcher",
   "displayName": "VC Matcher",
-  "version": "1.0.0",
-  "description": "High-conviction matching between startups and VCs. Eight cooperating agents (coordinator, profilers, scouts, match-scorer, devils-advocate, deduplicator) research with web search only, audit every fact adversarially, and report only matches that clear a shared rubric.",
+  "version": "1.1.0",
+  "description": "High-conviction matching between startups and VCs. Eight cooperating agents (coordinator, profilers, scouts, match-scorer, devils-advocate, deduplicator) research on the web plus any MCP data connectors the user has (Crunchbase, PitchBook, Dealroom, …), audit every fact adversarially, and report only matches that clear a shared rubric.",
   "author": {
     "name": "Backed VC",
     "email": "amalia@backed.vc",

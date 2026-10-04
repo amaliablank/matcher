@@ -10,8 +10,8 @@
     {
       "name": "vc-matcher",
       "source": "./plugins/vc-matcher",
-      "description": "High-conviction startup ↔ VC matching: /match-vcs <startup> and /match-startups <vc>. Eight agents, web search only, adversarial fact audit, shared rubric.",
-      "version": "1.0.0",
+      "description": "High-conviction startup ↔ VC matching: /match-vcs <startup> and /match-startups <vc>. Eight agents, web search plus any venture-data connectors you have (Crunchbase, PitchBook, Dealroom…), adversarial fact audit, shared rubric.",
+      "version": "1.1.0",
       "category": "productivity",
       "tags": ["venture-capital", "fundraising", "research", "multi-agent"]
     }

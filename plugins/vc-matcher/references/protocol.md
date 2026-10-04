@@ -2,7 +2,7 @@
 
 How the eight agents work together: topology, progressive disclosure, message
 formats, identity checks, deliberation, drift detection and model selection.
-Read alongside `matching-rubric.md`. Every agent follows both documents.
+Read alongside `matching-rubric.md` and `connectors.md`. Every agent follows all three.
 
 ---
 
@@ -46,6 +46,7 @@ Every run has a working directory, the **run dir**, created by the main session:
 ```
 ./matcher-reports/.work/<run-id>/          run-id = <mode>-<slug>-<YYYYMMDD-HHMM>
   00-plan.md                coordinator: interpreted request, phases, models, budgets
+  02-connectors.md          main session: connector inventory (usable MCP data sources, consent for private ones)
   01-identity/ENT-*.md      deduplicator: one identity card per entity
   10-subject-profile.md     profiler: dossier of the subject (the startup or VC named by the user)
   11-subject-audit.md       devils-advocate: audit + deliberation log for the subject
@@ -100,7 +101,8 @@ Entity:      <name> (ENT-id if already resolved)
 Inputs:      <paths to read, with the sections that matter>
 Constraints: <user constraints, e.g. "raising Series A, EUR 8M, H1 2027">
 Output file: <path to write>
-Budget:      <max searches / fetches; model chosen>
+Budget:      <max searches / fetches; max connector calls; model chosen>
+Connectors:  <families + tool names this agent may use, from 02-connectors.md, or "none: web only">
 Rubric:      ${CLAUDE_PLUGIN_ROOT}/references/matching-rubric.md
 Protocol:    ${CLAUDE_PLUGIN_ROOT}/references/protocol.md
 ```
@@ -109,6 +111,10 @@ Protocol:    ${CLAUDE_PLUGIN_ROOT}/references/protocol.md
 
 - Each agent restates the **objective** and **entity ENT-id** at the top of its
   file and checks its output against both before returning (anti-drift).
+- Use the connectors listed in your task card when they are available (see
+  `connectors.md` §3 for which families suit which agent). Always run the web
+  research as well. Connectors add data. They don't replace the web or relax
+  the evidence rules.
 - Never rely on memory or training data for facts about specific companies,
   people, funds or deals. Training-data recall may be used only to pick search
   terms, never as evidence.
@@ -252,7 +258,8 @@ before returning.
 | **TMP** | Temporal drift | Stale facts presented as current; a 2021 thesis treated as today's; a former partner listed as current; outdated headcount |
 | **SCP** | Scope drift | Answering a different question: profiling the parent company, a different fund vehicle, or the wrong round |
 | **CRT** | Criteria drift | Relaxing a gate or anchor "because the fit is otherwise great"; inventing new criteria |
-| **SRC** | Source hallucination / misattribution | URL does not contain the claim; quote not on page; dead link presented as evidence |
+| **SRC** | Source hallucination / misattribution | URL does not contain the claim; quote not on page; dead link presented as evidence; connector record ID that does not return the claimed value |
+| **DBX** | Database over-trust | A connector value accepted without an independent source for a gate-deciding fact; a database "lead investor" flag taken at face value; a stale database record treated as current; two providers fed by one press release counted as independent |
 | **LAU** | Citation laundering | Several aggregators copying one origin, counted as independent corroboration |
 | **NUM** | Number drift | Fund size vs ticket size; round size vs this investor's cheque; currency or year missing; ranges collapsed into a point |
 | **ROL** | Role drift | "Participated" reported as "led"; angel investment by a partner counted as a fund investment; advisor counted as founder |
@@ -302,6 +309,8 @@ because its preferred model is unavailable.
 
 The Coordinator also sets per-agent search budgets in the task card (typical:
 profiler 20–40 searches/fetches; scout 30–60; DA 1–3 verification lookups per
-gate-deciding fact; Deduplicator 3–8). Budgets are ceilings, not targets. An
+gate-deciding fact; Deduplicator 3–8), plus a separate ceiling on connector
+calls (typical: 10–30 per agent; lower for rate-limited or metered APIs, as
+noted in `02-connectors.md`). Budgets are ceilings, not targets. An
 agent that hits its budget with gate-deciding facts still unverified returns
 `PARTIAL` and lists them under `GAPS`. It must not guess.

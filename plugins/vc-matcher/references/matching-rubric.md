@@ -17,6 +17,11 @@ of it. Doing so is **criteria drift**, and the Devils-Advocate must flag it.
 | **T2, Reputable secondary** | Independent reporting with editorial standards, or curated databases | FT, Bloomberg, Reuters, WSJ, TechCrunch, Sifted, The Information, EU-Startups, Tech.eu, Axios Pro, public Crunchbase / Dealroom / PitchBook / Tracxn pages, partner interviews on reputable podcasts |
 | **T3, Weak** | Anything that may be copied, auto-generated or unaccountable | SEO listicles, "top 50 VCs in X" lists, AI-generated directories, scraped aggregators, forum posts, anonymous blogs |
 
+**Connector data** (MCP connectors such as Crunchbase, PitchBook or Dealroom,
+when the user has them) is tiered by `connectors.md` §4. Venture, people and
+traffic databases are T2. Official registries are T1. A connector record and
+the same provider's public page are one source.
+
 Aggregators that copy each other do **not** count as independent sources. If two
 T2/T3 pages share identical wording or obviously cite the same origin, count them
 as one source (avoid **citation laundering**).
@@ -53,7 +58,7 @@ Every fact recorded in a dossier or ledger uses this shape:
 ```
 [F-<agent-prefix>-<nn>] <claim>
   value:      <normalised value; currency + year for money, e.g. "EUR 2.0M (2025-03)">
-  source:     <URL>  (<T1|T2|T3>, published YYYY-MM-DD or "undated → YYYY-MM")
+  source:     <URL or connector:<server>/<tool> record <id>>  (<T1|T2|T3>, published/updated YYYY-MM-DD or "undated → YYYY-MM")
   source 2:   <URL>  (optional, for VERIFIED / CORROBORATED)
   confidence: <VERIFIED|CORROBORATED|SINGLE-SOURCE|INFERRED|UNVERIFIED>
   method:     <required for INFERRED: how it was inferred>

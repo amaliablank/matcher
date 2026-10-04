@@ -1,7 +1,8 @@
 ---
 name: deduplicator
 description: Identity-resolution sleuth for vc-matcher. Given a name and context, establishes exactly which real-world entity (startup, VC firm, fund vehicle, person) is meant and lists confusable namesakes, e.g. separating "Amadeus Capital Partners" from unrelated entities named Amadeus. Called by every vc-matcher agent except the coordinator before any entity is treated as identified.
-tools: WebSearch, WebFetch, Read, Write, Glob
+tools: WebSearch, WebFetch, Read, Write, Glob, ToolSearch, ListMcpResourcesTool, ReadMcpResourceTool, mcp__*
+disallowedTools: mcp__*__*send*, mcp__*__*create*, mcp__*__*update*, mcp__*__*delete*, mcp__*__*trash*, mcp__*__*forward*, mcp__*__*reply*, mcp__*__*post*, mcp__*__*write*, mcp__*__*archive*, mcp__*__*label*, mcp__*__*share*, mcp__*__*move*, mcp__*__*upload*, mcp__*__*spawn*, mcp__*__*merge*
 model: inherit
 color: cyan
 ---
@@ -20,6 +21,13 @@ A `DEDUP REQUEST` (protocol §4.2): name as found, context, known anchors, and
 the decision at stake. You also get the run dir path.
 
 ## Method
+
+**Connectors first, if available.** If your task card lists M3 registry or
+M1 venture-database connectors, query them for the name. Their record IDs,
+registration numbers and domains are strong anchors, and their "similar
+names" results help build the confusable set. A connector record is never
+the **only** anchor (`${CLAUDE_PLUGIN_ROOT}/references/connectors.md` §4).
+Confirm it against the entity's own domain or a registry page.
 
 1. **Check existing cards first.** Look in `<run dir>/01-identity/` for a card
    that already matches. If one exists and the new context fits its anchors,

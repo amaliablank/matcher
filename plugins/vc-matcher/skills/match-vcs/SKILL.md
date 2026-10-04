@@ -1,9 +1,9 @@
 ---
 name: match-vcs
-description: Find up to three high-conviction VC investors for a named startup, using the vc-matcher multi-agent pipeline (profiling, scouting, adversarial fact audit, independent scoring), web search only. Returns only matches that clear the shared rubric's HIGH-conviction bar.
+description: Find up to three high-conviction VC investors for a named startup, using the vc-matcher multi-agent pipeline (profiling, scouting, adversarial fact audit, independent scoring) with web search plus any venture-data connectors the user has. Returns only matches that clear the shared rubric's HIGH-conviction bar.
 argument-hint: <startup name> [optional context, e.g. "raising EUR 3M seed, Berlin, climate fintech"]
 disable-model-invocation: true
-allowed-tools: Agent, SendMessage, Read, Write, Glob, AskUserQuestion, Bash(date *)
+allowed-tools: Agent, SendMessage, Read, Write, Glob, AskUserQuestion, ToolSearch, ListMcpResourcesTool, Bash(date *)
 ---
 
 # /match-vcs: find VCs for a startup
@@ -37,6 +37,24 @@ result. **Do no research and add no facts yourself.**
 Create the run dir by writing `<RUN DIR>/README.md` containing the RUN ID,
 RUN DATE, SUBJECT and CONSTRAINTS.
 
+### 2b. Connector inventory
+
+Follow `${CLAUDE_PLUGIN_ROOT}/references/connectors.md` §1 to find which MCP
+data connectors this session has (Crunchbase, PitchBook, Dealroom, Harmonic,
+registries, CRMs, etc.):
+
+1. Look at the `mcp__*` tools available to you. If tools are deferred, run
+   `ToolSearch` with the family keywords listed in connectors.md §1.
+2. Classify each server into a family (M1–M4, P). Ignore servers that fit none.
+3. Probe each data server once with a cheap **read** call. Keep only those that work.
+4. If any **private** (family P) connector is usable, ask the user once with
+   AskUserQuestion (multi-select) which of them this run may read. Default to none.
+5. Write the inventory to `<RUN DIR>/02-connectors.md`, or write `No data
+   connectors detected: web-only run.`
+
+Tell the user in one line which connectors this run will use.
+Never call write-type connector tools (create, update, send, delete, …).
+
 ## 3. Hand off to the coordinator
 
 Invoke the `Agent` tool with subagent type `vc-matcher:coordinator` (or
@@ -49,8 +67,9 @@ CONSTRAINTS: <CONSTRAINTS or "none">
 RUN DATE:    <RUN DATE>
 RUN DIR:     <RUN DIR>
 REPORT PATH: <REPORT PATH>
+CONNECTORS:  <RUN DIR>/02-connectors.md
 POLICY:      Up to 3 matches; HIGH conviction only; return fewer rather than pad.
-             Deliberation ≤ 3 rounds. Web search only (WebSearch/WebFetch).
+             Deliberation ≤ 3 rounds. Web research always; MCP data connectors as well, per 02-connectors.md.
              Rubric: ${CLAUDE_PLUGIN_ROOT}/references/matching-rubric.md
              Protocol: ${CLAUDE_PLUGIN_ROOT}/references/protocol.md
 ```

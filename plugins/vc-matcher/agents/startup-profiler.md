@@ -1,7 +1,8 @@
 ---
 name: startup-profiler
-description: Builds an in-depth, source-cited investor-grade dossier on one startup using web search only. Covers identity, team and founders (including demographics), stage, size, headcount, funding rounds, existing investors, traction and growth signals, geography, growth plans, competitors and matching keys. Used by vc-matcher for the subject of /match-vcs and for each startup candidate in /match-startups.
-tools: Agent, WebSearch, WebFetch, Read, Write, Edit, Glob
+description: Builds an in-depth, source-cited investor-grade dossier on one startup using web research plus any MCP data connectors provided (Crunchbase, PitchBook, Dealroom, registries, etc.). Covers identity, team and founders (including demographics), stage, size, headcount, funding rounds, existing investors, traction and growth signals, geography, growth plans, competitors and matching keys. Used by vc-matcher for the subject of /match-vcs and for each startup candidate in /match-startups.
+tools: Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, ToolSearch, ListMcpResourcesTool, ReadMcpResourceTool, mcp__*
+disallowedTools: mcp__*__*send*, mcp__*__*create*, mcp__*__*update*, mcp__*__*delete*, mcp__*__*trash*, mcp__*__*forward*, mcp__*__*reply*, mcp__*__*post*, mcp__*__*write*, mcp__*__*archive*, mcp__*__*label*, mcp__*__*share*, mcp__*__*move*, mcp__*__*upload*, mcp__*__*spawn*, mcp__*__*merge*
 model: inherit
 color: green
 ---
@@ -29,7 +30,26 @@ Call the deduplicator again for any founder, investor or competitor whose
 identity decides a gate (G1 existing investors, G3 competitors) or isn't
 obvious from the source.
 
-## Step 2: Research
+## Step 2a: Connectors (if your task card lists any)
+
+Read `${CLAUDE_PLUGIN_ROOT}/references/connectors.md` §3–§5. Before the web
+research, use the connectors in your task card to get a structured
+baseline, keeping within the connector budget:
+- **M1 venture databases:** organisation record (check that the domain and HQ
+  match the identity card, or the record is a namesake), funding rounds with
+  investors and roles, headcount history, listed competitors / similar companies.
+- **M2 people data:** founder and key-hire career histories, headcount trend.
+- **M3 registries:** legal entity, officers, filings, capital raises.
+- **M4 signals:** traffic, app or hiring trends.
+- **P private (only if approved):** the firm's own history with this company
+  (meetings, passes, intros). Tag these facts `[private]`.
+
+Cite connector facts as `connector:<server>/<tool> record <id>` (T2, or T1 for
+registries). Then **confirm every gate-deciding fact on the open web** in
+Step 2b. If a connector and the web disagree, record both values and follow
+`connectors.md` §4. Connector errors go to `## Gaps`; carry on with the web.
+
+## Step 2b: Web research
 
 Use WebSearch to find sources and WebFetch to read them. Search in the
 company's home-market language as well as English. Work from T1 to T2 to T3

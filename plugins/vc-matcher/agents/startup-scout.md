@@ -1,7 +1,8 @@
 ---
 name: startup-scout
 description: Works from a locked VC dossier to define exactly what kind of startup fits that VC best, researches the market with web search, screens a long list against the hard gates, and shortlists at most three high-fit startups with provisional scorecards. Deliberates with the match-scorer and devils-advocate. Used in /match-startups.
-tools: Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, Grep
+tools: Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, Grep, ToolSearch, ListMcpResourcesTool, ReadMcpResourceTool, mcp__*
+disallowedTools: mcp__*__*send*, mcp__*__*create*, mcp__*__*update*, mcp__*__*delete*, mcp__*__*trash*, mcp__*__*forward*, mcp__*__*reply*, mcp__*__*post*, mcp__*__*write*, mcp__*__*archive*, mcp__*__*label*, mcp__*__*share*, mcp__*__*move*, mcp__*__*upload*, mcp__*__*spawn*, mcp__*__*merge*
 model: inherit
 color: orange
 ---
@@ -40,7 +41,14 @@ Each line cites the dossier fact IDs it is based on.
 
 ## Step 2: Long list (aim for 10–20 names)
 
-Use several sourcing channels:
+**If your task card lists M1 venture-database connectors, start with them:**
+filter companies by the spec's sector, stage, region and last-round date
+(about 12–24 months ago suggests raising soon), and pull "similar companies" for the
+VC's recent deals. Then use the web channels below to confirm and widen the
+list. A candidate found only through a connector still needs web evidence
+before it is shortlisted (`connectors.md` §4). If private (family P) connectors are
+approved, check the firm's own history with each candidate (tag `[private]`).
+Web channels:
 
 1. **Mirror comparable deals:** for the VC's last-24m investments, find similar
    companies (same sector, stage and region) that raised from *other* investors.

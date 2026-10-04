@@ -2,8 +2,9 @@
 
 A Claude Code plugin from Backed VC that matches **startups with VCs** (and
 VCs with startups) with high accuracy, depth and conviction. Eight agents
-research using **web search only**, audit each other's facts, and argue it out
-until they agree. Only matches that clear a shared rubric are reported.
+research on the **web plus any venture-data connectors you have** (Crunchbase,
+PitchBook, Dealroom, Harmonic, registries, your CRM…), audit each other's
+facts, and argue it out until they agree. Only matches that clear a shared rubric are reported.
 
 ## Install
 
@@ -38,7 +39,7 @@ audits, deliberation logs, identity cards) stay in
 ## How it works
 
 ```
-/match-vcs or /match-startups (main session: sets up the run, asks you when needed)
+/match-vcs or /match-startups (main session: sets up the run, finds your connectors, asks you when needed)
   └── coordinator: plans the run, picks agents, models and budgets; relays deliberation; writes the report
         ├── startup-profiler ─┐
         ├── vc-profiler       │
@@ -62,12 +63,13 @@ parallel) → audit → Match-Scorer scores blind, then deliberates with the sco
 | `vc-scout` | Ideal-VC spec → long list → gate screen → ≤ 3 shortlisted VCs |
 | `startup-scout` | Ideal-startup spec → long list → gate screen → ≤ 3 shortlisted startups |
 | `match-scorer` | Scores each pair blind, critiques the scout, ≤ 3 deliberation rounds, assigns conviction |
-| `devils-advocate` | Audits every fact against its sources and a catalogue of agent failure modes (entity drift, stale facts, citation laundering, number and role drift, sycophantic concessions…); ≤ 3 rounds with each author |
+| `devils-advocate` | Audits every fact against its sources and a catalogue of agent failure modes (entity drift, stale facts, citation laundering, database over-trust, number and role drift, sycophantic concessions…); ≤ 3 rounds with each author |
 | `deduplicator` | Identity sleuth. Separates *Amadeus Capital Partners* from Mozart, Amadeus IT Group and every other namesake |
 
 ### Shared references
 
 - [`references/matching-rubric.md`](plugins/vc-matcher/references/matching-rubric.md): source tiers, confidence labels, 24-month recency window, six hard gates, eight weighted dimensions, conviction levels.
+- [`references/connectors.md`](plugins/vc-matcher/references/connectors.md): how connectors are discovered, classified (venture databases, people data, registries, traffic signals, private workspace), assigned to agents and treated as evidence.
 - [`references/protocol.md`](plugins/vc-matcher/references/protocol.md): topology, progressive disclosure (L0 task card → L1 summary → L2 dossier → L3 evidence), identity cards, deliberation formats, drift catalogue, model-selection policy.
 
 ### Hard gates (any failure disqualifies a match)
@@ -85,9 +87,26 @@ exclusions listed and the reasons given.
 
 ## Notes
 
-- **Web search only:** agents use `WebSearch` and `WebFetch` and no other data
-  sources. Coverage is limited to what is public. Gaps are reported, never
-  guessed.
+- **Data sources:** agents always research the web (`WebSearch`, `WebFetch`).
+  At the start of each run, the command checks which MCP connectors you have.
+  It probes each venture-data connector (Crunchbase, PitchBook, Dealroom, CB
+  Insights, Tracxn, Harmonic, Specter, people-data providers, company
+  registries, traffic data) with one read call, and hands the working ones to
+  the agents that need them. Connector data is cited as `connector:<server>/…`
+  and treated as a curated database (T2; registries T1). Gate-deciding facts
+  still need an independent web source, and the Devils-Advocate checks this.
+  With no connectors, the run is web-only and the report says so.
+- **Private connectors** (CRM such as Affinity, Attio, HubSpot or Salesforce;
+  Notion, Drive, Gmail, Slack) are used **only if you approve them** when
+  asked at the start of the run. They help with gate G1 (existing
+  relationship) and warm-intro paths. Facts from them are tagged `[private]`
+  in the report.
+- **Read-only:** agents may only call read tools. Write-type connector tools
+  (send, create, update, delete, post, share, …) are blocked in the agents'
+  configuration and forbidden in their instructions.
+- **Permissions:** to avoid repeated permission prompts (and denials for
+  background agents), pre-approve your data connectors' read tools in
+  `/permissions`, e.g. `mcp__crunchbase`.
 - **Founder demographics** are recorded on request, including **inferred**
   attributes. Inferred values are always labelled with their method, never
   inferred from photos, weighted lightly (rubric D8), and never used to rule
@@ -108,7 +127,7 @@ plugins/vc-matcher/
   .claude-plugin/plugin.json
   agents/        8 agents
   skills/        match-vcs, match-startups
-  references/    matching-rubric.md, protocol.md
+  references/    matching-rubric.md, protocol.md, connectors.md
 ```
 
 ## License

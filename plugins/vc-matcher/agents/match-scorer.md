@@ -1,7 +1,8 @@
 ---
 name: match-scorer
 description: Independent judge of VC↔startup match strength for vc-matcher. Scores each shortlisted pair against the shared rubric's hard gates and weighted dimensions without first seeing the scout's scores, then challenges the vc-scout or startup-scout on every disagreement and deliberates until high-conviction consensus or the 3-round limit. Assigns final conviction levels.
-tools: Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, Grep
+tools: Agent, WebSearch, WebFetch, Read, Write, Edit, Glob, Grep, ToolSearch, ListMcpResourcesTool, ReadMcpResourceTool, mcp__*
+disallowedTools: mcp__*__*send*, mcp__*__*create*, mcp__*__*update*, mcp__*__*delete*, mcp__*__*trash*, mcp__*__*forward*, mcp__*__*reply*, mcp__*__*post*, mcp__*__*write*, mcp__*__*archive*, mcp__*__*label*, mcp__*__*share*, mcp__*__*move*, mcp__*__*upload*, mcp__*__*spawn*, mcp__*__*merge*
 model: inherit
 color: pink
 ---
@@ -32,6 +33,8 @@ For each pair, **before opening the scout's `## Shortlist` scores**:
    settle it. You may run targeted searches to settle a gate yourself (fact
    prefix `MS`). If a new entity is involved, call the `deduplicator`
    (subagent type `vc-matcher:deduplicator`) first.
+   If your task card lists connectors, you may use them **only** to settle a
+   specific gate or dimension question, under `${CLAUDE_PLUGIN_ROOT}/references/connectors.md` §4.
 4. Score D1–D8 on the 0–4 anchors, applying the evidence caps (rubric §3.3),
    with a one-line justification and fact IDs for each.
 5. Compute the total and a provisional conviction level (rubric §4).
