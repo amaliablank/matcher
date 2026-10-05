@@ -13,6 +13,19 @@ facts, and argue it out until they agree. Only matches that clear a shared rubri
 /plugin install vc-matcher@backed-plugins
 ```
 
+### No `/plugin` command? (claude.ai/code cloud sessions)
+
+This repo also carries the agents and commands in `.claude/` (links into
+`plugins/vc-matcher/`). Any Claude Code session opened **on this repo**
+loads them automatically, with no install. There the commands are simply
+`/match-vcs` and `/match-startups`. Reports are written inside the session's
+container, so ask Claude to commit them if you want to keep them.
+
+To use them in another repo without the plugin system, copy the real files
+(not the links): `plugins/vc-matcher/agents/` → `.claude/agents/`,
+`plugins/vc-matcher/skills/` → `.claude/skills/`, and
+`plugins/vc-matcher/references/` → `.claude/vc-matcher/references/`.
+
 ## Use
 
 ```text

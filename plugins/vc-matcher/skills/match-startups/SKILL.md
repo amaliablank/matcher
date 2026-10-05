@@ -6,6 +6,13 @@ disable-model-invocation: true
 allowed-tools: Agent, SendMessage, Read, Write, Glob, AskUserQuestion, ToolSearch, ListMcpResourcesTool, Bash(date *)
 ---
 
+> **Reference files.** Paths written as `${CLAUDE_PLUGIN_ROOT}/references/…`
+> point into the vc-matcher plugin. If that prefix appears unexpanded, or the
+> file isn't there (for example because these files were loaded from a
+> project's `.claude/` folder rather than installed as a plugin), find the
+> files with Glob `**/vc-matcher/references/*.md` and use those paths, also
+> in any task cards or prompts you pass on.
+
 # /match-startups: find startups for a VC
 
 User input: `$ARGUMENTS`
